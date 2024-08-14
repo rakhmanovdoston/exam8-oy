@@ -7,6 +7,8 @@ import {
   setSelectedCurrency,
 } from "./cryptoSlice";
 
+import { addSelectedCrypto } from "./selectedCryptosSlice";
+
 export const CryptoContext = createContext();
 
 export default function CryptoProvider({ children }) {
@@ -29,6 +31,7 @@ export default function CryptoProvider({ children }) {
         loading,
         setSelectedCurrency,
         selectedCurrency,
+        addSelectedCrypto,
       }}
     >
       {children}

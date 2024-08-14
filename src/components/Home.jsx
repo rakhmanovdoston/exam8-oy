@@ -17,6 +17,7 @@ export default function Home() {
     setLoading,
     addCryptos,
     selectedCurrency,
+    addSelectedCrypto,
   } = cryptoContext;
 
   const [currentPage, setCurrentPage] = useState(1);
@@ -25,6 +26,13 @@ export default function Home() {
   const [searchQuery, setSearchQuery] = useState("");
 
   console.log(selectedCurrency);
+
+  useEffect(() => {
+    const savedSelectedCrypto = localStorage.getItem("selectedCrypto");
+    if (savedSelectedCrypto) {
+      dispatch(addSelectedCrypto(JSON.parse(savedSelectedCrypto)));
+    }
+  }, []);
 
   useEffect(() => {
     async function fetchAllCryptos() {
@@ -46,6 +54,41 @@ export default function Home() {
     }
     fetchAllCryptos();
   }, [selectedCurrency]);
+
+  const handleSelectedCrypto = (crypto) => {
+    const cryptoData = {
+      id: crypto.id,
+      name: crypto.name,
+      image: crypto.image,
+      currentPrice: crypto.current_price,
+      priceChangePercentage: crypto.price_change_percentage_24h,
+      description: crypto.description,
+      rank: crypto.market_cap_rank,
+    };
+
+    const cryptoIndex = selectedCryptos.findIndex((c) => c.id === crypto.id);
+
+    if (cryptoIndex === -1) {
+      const updatedSelectedCrypto = [...selectedCryptos, cryptoData];
+      dispatch(addSelectedCrypto(updatedSelectedCrypto));
+
+      localStorage.setItem(
+        "selectedCrypto",
+        JSON.stringify(updatedSelectedCrypto)
+      );
+    } else {
+      const updatedSelectedCrypto = selectedCryptos.filter(
+        (c) => c.id !== crypto.id
+      );
+
+      dispatch(addSelectedCrypto(updatedSelectedCrypto));
+
+      localStorage.setItem(
+        "selectedCrypto",
+        JSON.stringify(updatedSelectedCrypto)
+      );
+    }
+  };
 
   const customTheme = {
     root: {
@@ -92,7 +135,7 @@ export default function Home() {
       base: "xs:mt-0 mt-2 inline-flex items-center text-[#87CEEB] -space-x-px bg-transparent",
       showIcon: "inline-flex",
       previous: {
-        base: "ml-0 rounded-l-lg  bg-transparent px-3 py-2 leading-tight text-[#87CEEB] enabled:hover:bg-gray-100 enabled:hover:text-gray-700 dark:border-gray-700 dark:bg-gray-800 dark:text-gray-400 enabled:dark:hover:bg-gray-700 enabled:dark:hover:text-white",
+        base: "ml-0 rounded-l-lg  bg-transparent px-3 py-2 leading-tight text-[#87CEEB] enabled:hover:text-gray-700 dark:border-gray-700 dark:bg-gray-800 dark:text-gray-400 enabled:dark:hover:bg-gray-700 enabled:dark:hover:text-white",
         icon: "h-5 w-5",
       },
       next: {
@@ -102,7 +145,7 @@ export default function Home() {
       selector: {
         base: "w-12 h-12 bg-transparent py-2 leading-tight text-[#87CEEB] enabled:hover:text-[#87CEEB] dark:border-gray-700 dark:bg-gray-800 dark:text-gray-400 enabled:dark:hover:bg-gray-700 enabled:dark:hover:text-white rounded-full",
         active:
-          " text-[#87CEEB] bg-gray-700 dark:border-gray-700 dark:bg-gray-700 dark:text-white",
+          " text-[#87CEEB] bg-gray-700 hover:bg-gray-700 dark:border-gray-700 dark:bg-gray-700 dark:text-white",
         disabled: "cursor-not-allowed opacity-50",
       },
     },
@@ -158,8 +201,10 @@ export default function Home() {
         </h1>
         <input
           type="search"
-          placeholder="Search countries..."
-          className="w-full h-[61px] bg-transparent roboto font-normal text-[16px] px-5 rounded-md text-white my-5"
+          placeholder="Search For a Crypto Currency.."
+          className={`w-full h-[61px] bg-transparent roboto font-normal text-[16px] px-5 rounded-md placeholder:text-gray-400 outline-none placeholder:roboto placeholder:font-normal text-white my-5 ${
+            searchQuery ? "" : "focus:animate-pulse"
+          } `}
           value={searchQuery}
           onChange={handleSearch}
         />
@@ -208,9 +253,17 @@ export default function Home() {
                 </td>
                 <td className={`py-2 px-4 border-b-2 border-b-[#515151]`}>
                   <div className=" flex gap-5 items-center pl-[130px]">
-                    <button>
-                      {" "}
-                      <MdRemoveRedEye className="text-white" />
+                    <button
+                      className={`${
+                        selectedCryptos.some((c) => {
+                          return c.id === crypto.id;
+                        })
+                          ? " text-lime-500"
+                          : "text-white"
+                      }`}
+                      onClick={() => handleSelectedCrypto(crypto)}
+                    >
+                      <MdRemoveRedEye />
                     </button>
                     <span
                       className={`${
@@ -225,7 +278,7 @@ export default function Home() {
                   </div>
                 </td>
                 <td className="py-2 px-4 border-b-2 border-b-[#515151] text-white text-end">
-                  {crypto.market_cap.toLocaleString()}M
+                  {getCurrencySymbol()} {crypto.market_cap.toLocaleString()}M
                 </td>
                 <td className="py-2 px-4 border-b-2 border-b-[#515151] text-white"></td>
               </tr>
