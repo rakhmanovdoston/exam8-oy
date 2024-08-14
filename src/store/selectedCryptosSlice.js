@@ -8,7 +8,7 @@ export const selectedCryptos = createSlice({
     reducers : {
         addSelectedCrypto: (state , action) => {
             state.selectedCryptos = action.payload
-        } , 
+        },
         
     }
 })

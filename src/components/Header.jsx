@@ -32,7 +32,7 @@ export default function Header() {
     <header className="w-full h-[64px]">
       <div className="w-[1280px] h-full flex justify-between m-auto items-center">
         <h1 className="montserrat text-[20px] font-bold hover:font-light transition-all text-[#87CEEB]">
-          <Link>CRYPTOFOLIO</Link>
+          <Link to={"/"}>CRYPTOFOLIO</Link>
         </h1>
         <nav className="flex gap-5 items-center">
           <select
@@ -54,7 +54,7 @@ export default function Header() {
         </nav>
       </div>
       <Drawer
-        className="w-[511px] bg-[#515151]"
+        className="w-[511px] bg-[#515151] px-10"
         open={isOpen}
         onClose={handleClose}
         position="right"
@@ -63,21 +63,23 @@ export default function Header() {
           <h1 className="text-center roboto font-medium text-[30px] text-white">
             WATCH LIST
           </h1>
-          <section>
+          <section className="grid grid-cols-2 gap-4">
             {selectedCryptos &&
               selectedCryptos.map((s) => {
                 return (
                   <div
                     key={s.id}
-                    className="w-[200px] h-[250px] bg-[#14161A] rounded-[25px]"
+                    className="w-[200px] h-[250px] bg-[#14161A] rounded-[25px] p-5 flex flex-col gap-5 items-center col-span-1"
                   >
                     <img src={s.image} alt={s.name} width={118} height={118} />
-                    <h2 className="roboto text-[18px] font-bold text-white">
-                      {s.name}
-                    </h2>
-                    <p className="text-white">
-                      {getCurrencySymbol()} {s.currentPrice.toLocaleString()}
-                    </p>
+                    <div className="flex flex-col items-center gap-3">
+                      <p className="text-white">
+                        {getCurrencySymbol()} {s.currentPrice.toLocaleString()}
+                      </p>
+                      <button className="w-[100px] h-[30px] bg-red-600 text-white">
+                        Remove
+                      </button>
+                    </div>
                   </div>
                 );
               })}
