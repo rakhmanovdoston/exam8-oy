@@ -64,6 +64,7 @@ export default function Home() {
       priceChangePercentage: crypto.price_change_percentage_24h,
       description: crypto.description,
       rank: crypto.market_cap_rank,
+      symbol: crypto.symbol,
     };
 
     const cryptoIndex = selectedCryptos.findIndex((c) => c.id === crypto.id);
@@ -193,7 +194,34 @@ export default function Home() {
           className={`w-full my-5 h-[188px] m-auto bg-transparent text-white`}
           theme={customTheme}
           indicators={false}
-        ></Carousel>
+        >
+          {selectedCryptos.slice(0, 4).map((s) => {
+            return (
+              <div key={s.id}>
+                <div className="flex flex-col items-center justify-center h-full">
+                  <img src={s.image} alt={s.name} width={80} height={80} />
+                  <article className="flex gap-1">
+                    <p className="text-white">{s.symbol.toUpperCase()}</p>
+                    <span
+                      className={`${
+                        s.priceChangePercentage > 0
+                          ? "text-[#0ECB81]"
+                          : "text-red-500"
+                      }`}
+                    >
+                      {s.priceChangePercentage > 0 ? "+" : ""}
+                      {s.priceChangePercentage.toFixed(2)}%
+                    </span>
+                  </article>
+                  <b>
+                    {" "}
+                    {getCurrencySymbol()} {s.currentPrice.toLocaleString()}
+                  </b>
+                </div>
+              </div>
+            );
+          })}
+        </Carousel>
       </section>
       <section className="w-full h-auto sm:w-[1280px] pb m-auto mt-10">
         <h1 className="montsrt text-[34px] text-center text-white font-light">
@@ -234,7 +262,7 @@ export default function Home() {
                       height={50}
                     />
                     <article className="text-start">
-                      <Link to={`/selectedCountry/${crypto.id}`}>
+                      <Link to={`/selectedCrypto/${crypto.id}`}>
                         <p className="roboto font-normal text-[22px]">
                           {crypto.symbol.toUpperCase()}
                         </p>

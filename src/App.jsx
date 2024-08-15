@@ -11,7 +11,7 @@ function App() {
         <Header />
         <Routes>
           <Route path="/" element={<Home />} />
-          <Route path="/selectedCountry/:id" element={<SelectedCryptos />} />
+          <Route path="/selectedCrypto/:id" element={<SelectedCryptos />} />
         </Routes>
       </Router>
     </main>
