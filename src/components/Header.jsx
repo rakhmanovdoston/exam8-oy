@@ -63,7 +63,7 @@ export default function Header() {
           <h1 className="text-center roboto font-medium text-[30px] text-white">
             WATCH LIST
           </h1>
-          <section className="grid grid-cols-2 gap-4">
+          <section className="grid grid-cols-2 gap-5">
             {selectedCryptos &&
               selectedCryptos.map((s) => {
                 return (
